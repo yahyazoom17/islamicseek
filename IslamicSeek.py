@@ -7,13 +7,13 @@ import os
 load_dotenv()
 
 # Initialize Groq client
-client = Groq(api_key=os.getenv("DEEPSEEK_KEY"))
+client = Groq(api_key=st.secrets["DEEPSEEK_API_KEY"])
 
 # App Title & Subtitle
-st.title("IslamicSeek")
-st.subheader("Created with DeepSeek-R1")
+st.title("IslamicSeek", anchor=False)
+st.write("Powered By DeepSeek-R1")
 
-st.write("")
+st.divider()
 
 # Create input & button layout
 col1, col2 = st.columns([4, 1])  # Adjust width ratio as needed
@@ -22,7 +22,7 @@ with col1:
     user_input = st.text_input(label="Ask Anything..!", label_visibility="collapsed", key="user_input", placeholder="Type your question here...")
 
 with col2:
-    send_button = st.button("Send", use_container_width=True)
+    send_button = st.button("Send", use_container_width=True, type="primary")
 
 # Only process when the button is clicked and input is not empty
 if send_button and user_input:
@@ -46,10 +46,20 @@ Do not provide answers on other topics such as politics, entertainment, science,
 Provide direct answers from Quran and Hadith without:
 1. Internal monologue
 2. Thinking phrases
-3. Processing disclaimers."""
+3. Processing disclaimers.
+Please do not answer any questions not related to islam or hadith or quran."""
             }, {
                 "role": "user",
-                "content": user_input
+                "content": f"""You are an Islamic scholar answering questions **only** related to Islam, the Quran, Hadith, and Islamic teachings. 
+
+If a question is unrelated to Islam, **politely refuse** to answer and ask the user to ask something relevant. 
+Do not provide answers on other topics such as politics, entertainment, science, or general knowledge.
+
+Provide direct answers from Quran and Hadith without:
+1. Internal monologue
+2. Thinking phrases
+3. Processing disclaimers.
+Please do not answer any questions not related to islam or hadith or quran. Now answer this question: {user_input}"""
             }],
             temperature=0.6,
             max_tokens=4096,
@@ -76,3 +86,9 @@ Provide direct answers from Quran and Hadith without:
     # Display response
     st.markdown("### Answer:")
     st.markdown(filtered_response)
+
+st.write("")
+
+st.divider()
+
+st.link_button(label="About The Developer",  type="secondary", icon="🔗", url="https://linktr.ee/yahyazoom17")
